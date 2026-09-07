@@ -10,23 +10,21 @@ _Posiciona a tua câmera do jeito mais simples possível._
 
 ---
 
-O **Floating Head Cam** é um aplicativo que coloca a tua webcam em uma janela flutuante.
+O **Floating Head Cam** exibe a tua webcam em uma janela flutuante de forma prática e rápida. É ideal para criadores de conteúdo que desejam economizar tempo na edição ou buscam uma solução mais simples.
 
-Feito para criadores de conteúdo que não têm domínio de programas de edição ou pretendem econimazar tempo de edição.
+## Funcionalidades
 
-## O que ele faz?
+- **Sempre no Topo:** A câmera fica sobre todas as janelas, não importa o que você esteja a fazer.
+- **Visual Customizável:** Escolha o formato (círculo, quadrado, retângulo) e ajuste o tamanho e as bordas.
+- **Atalhos Mágicos:** Mova a câmera instantaneamente para os cantos da tela usando o teclado.
+- **Gravador [BETA]:** Grave a tua tela diretamente pelo app.
 
-- **Sempre no Topo:** A tua câmera flutua sobre todas as outras janelas, não importa o que você esteja a fazer.
-- **Vitual Customizável:** Mude o formato (círculo, quadrado, retângulos), ajuste o tamanho e o arredondamento das bordas como preferir.
-- **Atalhos Mágicos:** Posiciona a câmera para qualquer canto da tela instantaneamente usando atalhos do teclado.
-- **Gravador [BETA]:** Grava a tua tela.
+## Como usar
 
-## Como começar
-
-1. **Baixe o app** na [Página de Releases](https://github.com/FreddyDanilo/floating-head-cam/releases/latest) (disponível para Mac, Windows e Linux).
-2. **Abra o aplicativo**.
-3. Procure o **ícone de claquete** na tua barra de menus (Mac) ou na bandeja do sistema (Windows/Linux) e clique em **Turn On** para exibir a câmera.
-4. Acesse as **Preferences** no mesmo menu para configurar seus atalhos e deixar o app com a tua cara!
+1. **Baixe** a versão mais recente na [Página de Releases](https://github.com/FreddyDanilo/floating-head-cam/releases/latest) (Mac, Windows ou Linux).
+2. **Inicie o aplicativo**.
+3. Encontre o **ícone de claquete** na barra de menus (Mac) ou na bandeja do sistema (Windows/Linux) e clique em **Turn On** para ligar a câmera.
+4. Acesse **Preferences** no mesmo menu para configurar atalhos e personalizar o visual!
 
 ---
 
