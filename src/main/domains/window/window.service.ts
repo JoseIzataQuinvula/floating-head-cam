@@ -1,5 +1,5 @@
 import { is } from '@electron-toolkit/utils'
-import { app, BrowserWindow, screen, shell } from 'electron'
+import { app, BrowserWindow, Menu, screen, shell } from 'electron'
 import { join } from 'path'
 import winIcon from '../../../../build/icon.ico?asset'
 import icon from '../../../../resources/icon.png?asset'
@@ -227,6 +227,21 @@ export function createWindow(callbacks: WindowCallbacks): void {
       shell.openExternal(details.url)
       return { action: 'deny' }
     })
+    mainWindow.webContents.on('context-menu', () => {
+      const lang = currentState.language || 'en'
+      const contextMenu = Menu.buildFromTemplate([
+        {
+          label: t('tray.preferences', lang),
+          click: () => createSettingsWindow()
+        },
+        { type: 'separator' },
+        {
+          label: t('tray.quit', lang),
+          click: () => app.quit()
+        }
+      ])
+      contextMenu.popup()
+    })
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
       mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
     } else {
@@ -285,6 +300,21 @@ export function createWindow(callbacks: WindowCallbacks): void {
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
+  })
+  mainWindow.webContents.on('context-menu', () => {
+    const lang = currentState.language || 'en'
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: t('tray.preferences', lang),
+        click: () => createSettingsWindow()
+      },
+      { type: 'separator' },
+      {
+        label: t('tray.quit', lang),
+        click: () => app.quit()
+      }
+    ])
+    contextMenu.popup()
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])

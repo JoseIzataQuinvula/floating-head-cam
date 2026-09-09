@@ -29,9 +29,17 @@ export function setUpdateReady(value: boolean): void {
 }
 
 export function initTray(): void {
-  const trayIcon = nativeImage.createFromPath(icon).resize({ width: 16, height: 16 })
-  tray = new Tray(trayIcon)
-  tray.setToolTip('Floating Head Cam')
+  try {
+    const trayIcon = nativeImage.createFromPath(icon).resize({ width: 16, height: 16 })
+    tray = new Tray(trayIcon)
+    tray.setToolTip('Floating Head Cam')
+  } catch (err) {
+    console.warn(
+      'System tray unavailable (Linux/XFCE?). Use Ctrl+Shift+C or right-click on camera to access settings.',
+      err
+    )
+    tray = null
+  }
 }
 
 export function toggleCamera(state: TrayState): void {
