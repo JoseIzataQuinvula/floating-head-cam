@@ -7,6 +7,7 @@ import { saveSettings, shortcuts, currentState, DeviceInfo } from '../settings/s
 import {
   createSettingsWindow,
   getSettingsWindow,
+  getCameraWindow,
   moveCameraToScreen,
   setWindowPosition
 } from '../window/window.service'
@@ -45,19 +46,16 @@ export function initTray(): void {
 export function toggleCamera(state: TrayState): void {
   const newState = !getIsCameraOn()
   setIsCameraOn(newState)
-  const sw = getSettingsWindow()
-  BrowserWindow.getAllWindows().forEach((win) => {
-    if (win !== sw) {
-      if (newState) {
-        win.show()
-      } else {
-        setTimeout(() => {
-          if (!getIsCameraOn()) win.hide()
-        }, 300)
-      }
-      win.webContents.send('power-state', newState)
+  const cameraWin = getCameraWindow()
+  if (cameraWin && !cameraWin.isDestroyed()) {
+    if (newState) {
+      cameraWin.show()
+      cameraWin.focus()
+    } else {
+      cameraWin.hide()
     }
-  })
+    cameraWin.webContents.send('power-state', newState)
+  }
   buildTrayMenu(state)
 }
 

@@ -8,6 +8,7 @@ import { getIsCameraOn } from '../camera/camera.service'
 import { currentState, saveSettings } from '../settings/settings.service'
 let _settingsWindow: BrowserWindow | null = null
 let _recordingWorker: BrowserWindow | null = null
+let _cameraWindow: BrowserWindow | null = null
 let positionSaveTimer: ReturnType<typeof setTimeout> | null = null
 
 export function getSettingsWindow(): BrowserWindow | null {
@@ -16,6 +17,10 @@ export function getSettingsWindow(): BrowserWindow | null {
 
 export function getRecordingWorker(): BrowserWindow | null {
   return _recordingWorker
+}
+
+export function getCameraWindow(): BrowserWindow | null {
+  return _cameraWindow
 }
 
 type WindowCallbacks = {
@@ -42,6 +47,7 @@ export function createSettingsWindow(): void {
           titleBarOverlay: { color: '#0f0f0f', symbolColor: '#ffffff', height: 36 }
         }),
     autoHideMenuBar: true,
+    frame: false,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -49,6 +55,7 @@ export function createSettingsWindow(): void {
       devTools: false
     }
   })
+  _settingsWindow.setMenu(null)
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     _settingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '#/settings')
   } else {
@@ -167,6 +174,11 @@ export function resizeCameraWindow(width: number, height: number, x?: number, y?
 }
 
 export function createWindow(callbacks: WindowCallbacks): void {
+  if (_cameraWindow && !_cameraWindow.isDestroyed()) {
+    _cameraWindow.focus()
+    return
+  }
+
   const displays = screen.getAllDisplays()
   let selectedDisplay = displays.find((d) => d.id.toString() === currentState.cameraScreenId)
   if (!selectedDisplay) selectedDisplay = screen.getPrimaryDisplay()
@@ -204,6 +216,8 @@ export function createWindow(callbacks: WindowCallbacks): void {
     })
     mainWindow.setAlwaysOnTop(true, 'screen-saver')
     mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+    mainWindow.setMenu(null)
+    _cameraWindow = mainWindow
     mainWindow.on('ready-to-show', () => {
       if (getIsCameraOn()) mainWindow.show()
     })
@@ -240,7 +254,20 @@ export function createWindow(callbacks: WindowCallbacks): void {
           click: () => app.quit()
         }
       ])
-      contextMenu.popup()
+      if (process.platform !== 'linux') {
+        mainWindow.setIgnoreMouseEvents(false)
+      }
+      const restore = (): void => {
+        if (process.platform !== 'linux' && !mainWindow.isDestroyed()) {
+          mainWindow.setIgnoreMouseEvents(true, { forward: true })
+        }
+      }
+      const result = contextMenu.popup() as unknown as Promise<void> | void
+      if (result && typeof (result as Promise<void>).then === 'function') {
+        ;(result as Promise<void>).then(restore).catch(restore)
+      } else {
+        setTimeout(restore, 100)
+      }
     })
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
       mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
@@ -277,6 +304,8 @@ export function createWindow(callbacks: WindowCallbacks): void {
   mainWindow.setIgnoreMouseEvents(true, { forward: true })
   mainWindow.setAlwaysOnTop(true, 'screen-saver')
   mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+  mainWindow.setMenu(null)
+  _cameraWindow = mainWindow
   mainWindow.on('ready-to-show', () => {
     if (getIsCameraOn()) mainWindow.show()
   })
@@ -314,7 +343,20 @@ export function createWindow(callbacks: WindowCallbacks): void {
         click: () => app.quit()
       }
     ])
-    contextMenu.popup()
+    if (process.platform !== 'linux') {
+      mainWindow.setIgnoreMouseEvents(false)
+    }
+    const restore = (): void => {
+      if (process.platform !== 'linux' && !mainWindow.isDestroyed()) {
+        mainWindow.setIgnoreMouseEvents(true, { forward: true })
+      }
+    }
+    const result = contextMenu.popup() as unknown as Promise<void> | void
+    if (result && typeof (result as Promise<void>).then === 'function') {
+      ;(result as Promise<void>).then(restore).catch(restore)
+    } else {
+      setTimeout(restore, 100)
+    }
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
